@@ -4,6 +4,13 @@ spring:
     username: budgeting_user
     password: securepassword
     driver-class-name: org.postgresql.Driver
+    
+  security:
+    enabled: false
+    user:
+      name: admin
+      password: admin # Optional: Default credentials if you still want basic auth
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -11,15 +18,21 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  security:
-    user:
-      name: user
-      password: password
-    enabled: false
-server:
-  port:8080
 
+# Server configuration
+server:
+  port: 8080
+
+# Logging configuration
 logging:
   level:
     root: INFO
     org.springframework: DEBUG
+
+
+# Management (optional for Actuator health/info endpoints)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info

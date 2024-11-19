@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/budgeting_app
+      SPRING_DATASOURCE_USERNAME: budgeting_user
+      SPRING_DATASOURCE_PASSWORD: securepassword
+    networks:
+      - app-network
+    restart: always
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: budgeting_user
+      POSTGRES_PASSWORD: securepassword
+      POSTGRES_DB: budgeting_app
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U budgeting_user -d budgeting_app"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
